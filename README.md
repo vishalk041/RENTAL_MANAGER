@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Guwahati Rental Manager (Python + Flask + SQLite)
 
 A beginner-friendly local web app to keep rental property and owner records organised.
@@ -76,3 +77,6 @@ guwahati_rental_manager/
 
 ## Important before real use
 This is a local learning prototype, not a production-ready public website. It has no login, user roles, encrypted database, cloud backup or production security setup. Do not expose it to the public internet or store sensitive identity documents. Keep the computer account protected and make backups. Get owner permission before collecting/listing property media and contact details. Explain fees and brokerage terms clearly before any customer pays.
+=======
+# RENTAL_MANAGER
+>>>>>>> 05fb4d678462700fc7a7ffebeed7a1e1c8f2fba3
