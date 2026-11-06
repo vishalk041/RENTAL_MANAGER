@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Guwahati Rental Manager{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    // Apply saved theme immediately to prevent flashing
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
 </head>
 <body>
   <header class="topbar">
@@ -13,6 +24,10 @@
       <a href="{{ url_for('dashboard') }}">Dashboard</a>
       <a href="{{ url_for('properties') }}">Properties</a>
       <a class="nav-button" href="{{ url_for('add_property') }}">+ Add Property</a>
+      <button type="button" class="theme-toggle" id="themeToggleBtn" aria-label="Toggle dark mode">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark</span>
+      </button>
     </nav>
   </header>
   <main class="container">
@@ -26,5 +41,34 @@
     {% block content %}{% endblock %}
   </main>
   <footer>Local starter project · Keep owner and customer information private.</footer>
+  <script>
+    (function() {
+      const toggleBtn = document.getElementById('themeToggleBtn');
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+
+      function updateToggleUI(currentTheme) {
+        if (currentTheme === 'dark') {
+          icon.textContent = '☀️';
+          label.textContent = 'Light';
+        } else {
+          icon.textContent = '🌙';
+          label.textContent = 'Dark';
+        }
+      }
+
+      // Initial state
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      updateToggleUI(currentTheme);
+
+      toggleBtn.addEventListener('click', function() {
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('theme', nextTheme);
+        updateToggleUI(nextTheme);
+      });
+    })();
+  </script>
 </body>
 </html>
