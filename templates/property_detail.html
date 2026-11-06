@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ item.property_code }} · Rental Manager{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">{{ item.property_code }}</p>
+    <h1>{{ item.title }}</h1>
+    <p class="muted">{{ item.area }} · {{ item.property_type }}</p>
+  </div>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <a class="button" href="{{ url_for('edit_property', property_id=item.id) }}">✏️ Edit Property</a>
+    <a class="button secondary" href="{{ url_for('properties') }}">← Back to properties</a>
+  </div>
+</section>
+<div class="detail-grid">
+  <section class="panel">
+    {% if item.media_filename %}
+      {% set ext = item.media_filename.rsplit('.', 1)[1].lower() %}
+      {% if ext in ['mp4', 'mov'] %}
+        <video class="media" controls src="{{ url_for('uploaded_file', filename=item.media_filename) }}"></video>
+      {% else %}
+        <img class="media" src="{{ url_for('uploaded_file', filename=item.media_filename) }}" alt="Property media">
+      {% endif %}
+    {% else %}<div class="media-placeholder">No photo or video added</div>{% endif %}
+    <h2>Property details</h2>
+    <dl>
+      <dt>Rent</dt><dd>{% if item.monthly_rent %}₹{{ "{:,}".format(item.monthly_rent) }}/month{% else %}Not entered{% endif %}</dd>
+      <dt>Deposit</dt><dd>{% if item.deposit %}₹{{ "{:,}".format(item.deposit) }}{% else %}Not entered{% endif %}</dd>
+      <dt>Address / landmark</dt><dd>{{ item.address or "Not entered" }}</dd>
+      <dt>Google Maps</dt>
+      <dd>
+        {% if item.maps_url %}
+          <a href="{{ item.maps_url }}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 500;">📍 Open in Google Maps ↗</a>
+        {% else %}
+          Not entered
+        {% endif %}
+      </dd>
+      <dt>Facilities</dt><dd>{{ item.facilities or "Not entered" }}</dd>
+      <dt>Brokerage terms</dt><dd>{{ item.brokerage_terms or "Not entered" }}</dd>
+      <dt>Added</dt><dd>{{ item.created_at }}</dd>
+    </dl>
+  </section>
+  <section class="panel">
+    <h2>Owner contact</h2>
+    <dl><dt>Name</dt><dd>{{ item.owner_name }}</dd><dt>Phone</dt><dd>{{ item.owner_phone }}</dd><dt>Permission to list</dt><dd>{{ item.owner_permission }}</dd></dl>
+    <hr>
+    <h2>Update status</h2>
+    <form method="post" action="{{ url_for('update_status', property_id=item.id) }}" class="stack">
+      <select name="status">{% for s in ["Available", "Occupied", "On Hold", "Needs Verification"] %}<option {% if item.status == s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+      <button class="button" type="submit">Update status</button>
+    </form>
+    <hr>
+    <form method="post" action="{{ url_for('delete_property', property_id=item.id) }}" onsubmit="return confirm('Delete this property record permanently?')">
+      <button class="button danger" type="submit">Delete property</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

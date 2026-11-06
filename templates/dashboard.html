@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Rental Manager{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">OVERVIEW</p><h1>Dashboard</h1><p class="muted">A quick view of your rental property records.</p></div>
+  <a class="button" href="{{ url_for('add_property') }}">Add a property</a>
+</section>
+<section class="stats">
+  <div class="stat-card"><span>Total properties</span><strong>{{ total }}</strong></div>
+  <div class="stat-card"><span>Available</span><strong>{{ available }}</strong></div>
+  <div class="stat-card"><span>Occupied</span><strong>{{ occupied }}</strong></div>
+</section>
+<section class="panel">
+  <div class="section-heading"><h2>Recently added</h2><a href="{{ url_for('properties') }}">View all →</a></div>
+  {% if latest %}
+    <div class="table-wrap"><table>
+      <thead><tr><th>Property ID</th><th>Property</th><th>Area</th><th>Rent</th><th>Status</th></tr></thead>
+      <tbody>{% for p in latest %}
+        <tr>
+          <td><a href="{{ url_for('property_detail', property_id=p.id) }}">{{ p.property_code }}</a></td>
+          <td>{{ p.title }}</td><td>{{ p.area }}</td>
+          <td>{% if p.monthly_rent %}₹{{ "{:,}".format(p.monthly_rent) }}{% else %}—{% endif %}</td>
+          <td><span class="status">{{ p.status }}</span></td>
+        </tr>
+      {% endfor %}</tbody>
+    </table></div>
+  {% else %}
+    <div class="empty"><h3>No properties added yet</h3><p>Add your first room to begin organising your records.</p><a class="button" href="{{ url_for('add_property') }}">Add first property</a></div>
+  {% endif %}
+</section>
+{% endblock %}
